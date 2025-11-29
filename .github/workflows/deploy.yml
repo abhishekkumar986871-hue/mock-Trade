@@ -1,0 +1,61 @@
+name: Deploy to AWS Lambda
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+env:
+  AWS_REGION: ap-south-1
+  NODE_VERSION: '18'
+
+jobs:
+  deploy:
+    name: Deploy CDK Stack
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install CDK globally
+        run: npm install -g aws-cdk
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Bootstrap CDK (if needed)
+        run: cdk bootstrap aws://${{ secrets.AWS_ACCOUNT_ID }}/${{ env.AWS_REGION }}
+        continue-on-error: true
+
+      - name: Build CDK
+        run: npm run build:cdk
+
+      - name: Deploy CDK Stack
+        run: cdk deploy StockTradingStack --require-approval never --region ${{ env.AWS_REGION }}
+
+      - name: Get API URL
+        id: api-url
+        run: |
+          API_URL=$(aws apigateway get-rest-apis --region ${{ env.AWS_REGION }} --query "items[?name=='Stock Trading API'].id" --output text)
+          echo "API_URL=https://${API_URL}.execute-api.${{ env.AWS_REGION }}.amazonaws.com/prod" >> $GITHUB_OUTPUT
+
+      - name: Output deployment info
+        run: |
+          echo "Deployment completed successfully!"
+          echo "API URL: ${{ steps.api-url.outputs.API_URL }}"
+

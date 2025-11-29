@@ -1,0 +1,37 @@
+{
+  "name": "mock-stock-trading-app",
+  "version": "1.0.0",
+  "description": "Mock Stock Trading App for Indian Stock Market",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "build": "npm install && npm run build:cdk",
+    "build:cdk": "cdk synth",
+    "deploy": "cdk deploy --require-approval never",
+    "destroy": "cdk destroy",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "stock",
+    "trading",
+    "indian-market"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.1691.0",
+    "cookie-parser": "^1.4.6",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "serverless-http": "^3.2.0",
+    "yahoo-finance2": "^2.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "aws-cdk": "^2.140.0",
+    "aws-cdk-lib": "^2.140.0",
+    "constructs": "^10.3.0",
+    "typescript": "^5.4.5"
+  }
+}

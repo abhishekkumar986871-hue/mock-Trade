@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+
+# CDK
+cdk.out/
+*.swp
+*.swo
+*~
+
+# Environment variables
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# AWS
+.aws-sam/
+samconfig.toml
+
+# Build
+dist/
+build/
+
